@@ -3,10 +3,19 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
+import GithubProvider from 'next-auth/providers/github';
+
+if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
+  throw new Error('GITHUB_ID and GITHUB_SECRET must be define');
+}
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
     CredentialsProvider({
       // id: "credentials",
       // The name to display on the sign in form (e.g. 'Sign in with...')
