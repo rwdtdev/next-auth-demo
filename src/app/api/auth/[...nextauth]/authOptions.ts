@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
@@ -12,6 +12,7 @@ if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    // in https://github.com/settings/developers add Apps, Authorization callback URL set url to home page (http://localhost:3000)
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
