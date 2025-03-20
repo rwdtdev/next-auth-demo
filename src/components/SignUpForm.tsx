@@ -5,11 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormEvent } from 'react';
 import { signUpUser } from '@/app/actions/users';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'form'>) {
+  const router = useRouter();
   return (
     <form
       className={cn('flex flex-col gap-6', className)}
@@ -21,12 +25,33 @@ export function SignUpForm({
           password: { value: string };
         };
         console.log(target.email.value, target.password.value);
-        const resSignIn = await signUpUser({
+        const resSignUp = await signUpUser({
           email: target.email.value,
           password: target.password.value,
         });
 
-        console.log(resSignIn);
+        console.log(resSignUp);
+        if (resSignUp?.ok) {
+          console.log(resSignUp.user);
+          const signInRes = await signIn('credentials', {
+            redirect: false,
+            email: target.email.value,
+            password: target.password.value,
+          });
+          console.log('🚀 ~ onSubmit={ ~ signInRes:', signInRes);
+          if (resSignUp.ok) {
+            router.push('/');
+          }
+        }
+        if (resSignUp?.errMsg) {
+          if (
+            ['Unique', 'constraint', 'email'].every((item) =>
+              resSignUp.errMsg.includes(item)
+            )
+          ) {
+            toast.error('user with such email already exists');
+          }
+        }
       }}
     >
       <div className='flex flex-col items-center gap-2 text-center'>

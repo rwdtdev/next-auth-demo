@@ -11,6 +11,7 @@ if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: 'jwt' },
   providers: [
     // in https://github.com/settings/developers add Apps, Authorization callback URL set url to home page (http://localhost:3000)
     GithubProvider({
@@ -59,7 +60,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: { strategy: 'jwt' },
   jwt: {
     // The maximum age of the NextAuth.js issued JWT in seconds.
     // Defaults to `session.maxAge`.

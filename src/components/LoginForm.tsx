@@ -6,12 +6,14 @@ import { Label } from '@/components/ui/label';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { GithubIcon } from './icons/GithubIcon';
+import { toast } from 'sonner';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'form'>) {
   const router = useRouter();
+
   return (
     <>
       <form
@@ -34,6 +36,8 @@ export function LoginForm({
           console.log(resSignIn);
           if (resSignIn?.ok) {
             router.push('/');
+          } else if (resSignIn?.status === 401) {
+            toast.error('login or password is wrong');
           }
         }}
       >
